@@ -11,7 +11,7 @@
 
 | NED UNIVERSTIY ROLL NUMBER | Student Name |
 | ------------- | ------------- |
-| TC-22038 | <a href="https://mohammadshayan.com">Mohammad Shayan</a>  |
+| TC-22038 | <a href="https://mohammadshayan.com"  target="_blank" >Mohammad Shayan</a>  |
 | TC-22013 | Syeda Mishal Fatima Zaidi |
 | TC-22012 | Shoobika Nayyar Ali |
 | TC-22034 | Muhammad Hashir Tariq |
