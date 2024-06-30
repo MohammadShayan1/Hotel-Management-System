@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Poppins&weight=600&size=28&duration=4000&pause=500&color=01a64e&center=true&vCenter=true&width=435&lines=Hotel+Management+System;Data+Structures+And+Algoritms;Spring+2024;" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=Poppins&weight=600&size=28&duration=4000&pause=500&color=01a64e&center=true&vCenter=true&width=435&lines=Hotel+Management+System;Data+Structures+And+Algoritms;Spring+2024;CS-216;" alt="Typing SVG" />
 </div>
 
 ## Instructions
