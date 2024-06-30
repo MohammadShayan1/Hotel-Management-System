@@ -18,5 +18,5 @@
 
 ## ⚙️ Languages & Tools we used:
 <p align="left">
-  <img src="https://img.shields.io/badge/-C++-blue?logo=cplusplus">
+  <img src="https://img.shields.io/badge/-C++-01a64e?logo=cplusplus">
 </p>
