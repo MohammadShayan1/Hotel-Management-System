@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MAX_NAME_LENGTH 50
 #define PRICE_PER_NIGHT 5000
 #define EXTRA_SERVICES_COST 1000
+
 // Define a structure for a room in the hotel
 struct Room {
     int roomNumber; // Room number
@@ -13,6 +15,8 @@ struct Room {
     int duration; // Duration of stay in days
     int extraServices; // Extra services (1 if requested, 0 otherwise)
     int occupancy; // Number of people staying in the room
+    struct tm reservationTime; // Time of reservation
+    struct tm cancellationTime; // Time of cancellation
     struct Room* next; // Pointer to the next room in the list
 };
 
@@ -37,6 +41,8 @@ struct Room* createRoom(int roomNumber) {
     newRoom->duration = 0; // Initialize duration to 0
     newRoom->extraServices = 0; // Initialize extra services to not requested
     newRoom->occupancy = 0; // Initialize occupancy to 0
+    newRoom->reservationTime = (struct tm){0}; // Initialize reservation time to zero
+    newRoom->cancellationTime = (struct tm){0}; // Initialize cancellation time to zero
     newRoom->next = NULL; // Initialize next pointer to NULL
     return newRoom; // Return the pointer to the new room
 }
@@ -64,6 +70,9 @@ void makeReservation(struct Room* head, int roomNumber, const char* guestName, i
                 temp->extraServices = extraServices; // Set the extra services request
                 temp->occupancy = occupancy; // Set the number of people staying
 
+                time_t now = time(NULL);
+                temp->reservationTime = *localtime(&now); // Set the reservation time
+
                 int totalCost = PRICE_PER_NIGHT * duration; // Calculate the total cost
                 if (extraServices) {
                     totalCost += EXTRA_SERVICES_COST * duration; // Add extra services cost if requested
@@ -80,6 +89,7 @@ void makeReservation(struct Room* head, int roomNumber, const char* guestName, i
                     printf("* Extra Services      : %d PKR per night\n", EXTRA_SERVICES_COST);
                 }
                 printf("* Total Cost          : %d PKR\n", totalCost);
+                printf("* Reservation Time    : %s", asctime(&temp->reservationTime));
                 printLine('*', 30);
             } else {
                 printHeader("Error");
@@ -106,8 +116,13 @@ void cancelReservation(struct Room* head, int roomNumber, const char* guestName)
                 temp->duration = 0; // Reset the duration
                 temp->extraServices = 0; // Reset the extra services
                 temp->occupancy = 0; // Reset the occupancy
+
+                time_t now = time(NULL);
+                temp->cancellationTime = *localtime(&now); // Set the cancellation time
+
                 printHeader("Cancel Reservation");
                 printf("Reservation for %s in room %d canceled.\n", guestName, roomNumber); // Print confirmation
+                printf("Cancellation Time: %s", asctime(&temp->cancellationTime));
                 printLine('-', 30);
             } else {
                 printHeader("Error");
@@ -130,6 +145,7 @@ void viewReservations(struct Room* head) {
     while (temp != NULL) { // Traverse the list
         if (temp->isReserved) { // Check if the room is reserved
             printf("Room %d is reserved by %s for %d days with %d people.\n", temp->roomNumber, temp->guestName, temp->duration, temp->occupancy); // Print reservation details
+            printf("Reservation Time: %s", asctime(&temp->reservationTime));
         } else {
             printf("Room %d is not reserved.\n", temp->roomNumber); // Print that the room is not reserved
         }
@@ -150,6 +166,9 @@ void viewRoomDetails(struct Room* head) {
             printf("Duration        : %d days\n", temp->duration);
             printf("Occupancy       : %d\n", temp->occupancy);
             printf("Extra Services  : %s\n", temp->extraServices ? "Yes" : "No");
+            printf("Reservation Time: %s", asctime(&temp->reservationTime));
+        } else if (temp->cancellationTime.tm_year > 0) {
+            printf("Last Cancellation Time: %s", asctime(&temp->cancellationTime));
         }
         printLine('-', 30);
         temp = temp->next; // Move to the next room
@@ -216,9 +235,9 @@ int main() {
                 scanf(" %[^\n]", guestName); // Read a line of input for the guest name
                 printf("Enter duration of stay (in days): ");
                 scanf("%d", &duration);
-                printf("Enter number of people: ");
+                printf("Enter number of people staying: ");
                 scanf("%d", &occupancy);
-                printf("Do you want extra services (food, gym, spa) for 1000 PKR per night? (1 for Yes, 0 for No): ");
+                printf("Request extra services? (1 for yes, 0 for no): ");
                 scanf("%d", &extraServices);
                 makeReservation(head, roomNumber, guestName, duration, extraServices, occupancy); // Make a reservation
                 break;
@@ -236,13 +255,18 @@ int main() {
                 viewRoomDetails(head); // View details of all rooms
                 break;
             case 0:
-                printf("Exiting...\n");
+                freeRooms(head); // Free all allocated memory
+                printHeader("Exiting");
+                printf("Goodbye!\n");
+                printLine('*', 30);
                 break;
             default:
-                printf("Invalid choice. Please try again.\n");
+                printHeader("Invalid Choice");
+                printf("Please enter a valid option.\n");
+                printLine('-', 30);
+                break;
         }
-    } while (choice != 0); // Repeat until the user chooses to exit
+    } while (choice != 0);
 
-    freeRooms(head); // Free allocated memory before exiting
     return 0;
 }
